@@ -116,6 +116,16 @@
   }
   .card .btn-done:hover { background: #059669; }
 
+  .card-text a {
+    color: #2563eb;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 500;
+  }
+  .card-text a:hover {
+    color: #1d4ed8;
+  }
+
   .card-empty .card-text {
     color: #9ca3af;
     font-style: italic;
@@ -177,7 +187,7 @@ function renderGrid() {
       card.innerHTML = `<span class="card-text">No more cards!</span>`;
     } else {
       card.innerHTML = `
-        <span class="card-text">${escapeHtml(text)}</span>
+        <span class="card-text">${sanitizeCardHtml(text)}</span>
         <button class="btn-done" data-index="${i}">Done ✓</button>`;
     }
     grid.appendChild(card);
@@ -201,7 +211,7 @@ function replaceCard(index) {
       newCard.innerHTML = `<span class="card-text">No more cards!</span>`;
     } else {
       newCard.innerHTML = `
-        <span class="card-text">${escapeHtml(hand[index])}</span>
+        <span class="card-text">${sanitizeCardHtml(hand[index])}</span>
         <button class="btn-done" data-index="${index}">Done ✓</button>`;
     }
     grid.replaceChild(newCard, cardEl);
@@ -216,9 +226,23 @@ function startGame() {
   renderGrid();
 }
 
-function escapeHtml(str) {
+function sanitizeCardHtml(str) {
+  // Allow only <a> tags with href; escape everything else
   const d = document.createElement('div');
-  d.textContent = str;
+  d.innerHTML = str;
+  // Walk all elements and remove anything that isn't an <a>
+  d.querySelectorAll('*').forEach(el => {
+    if (el.tagName !== 'A') {
+      el.replaceWith(document.createTextNode(el.textContent));
+      return;
+    }
+    // Keep only href, force target="_blank" and rel for safety
+    const href = el.getAttribute('href');
+    Array.from(el.attributes).forEach(a => el.removeAttribute(a.name));
+    if (href) el.setAttribute('href', href);
+    el.setAttribute('target', '_blank');
+    el.setAttribute('rel', 'noopener noreferrer');
+  });
   return d.innerHTML;
 }
 
