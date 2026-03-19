@@ -101,8 +101,6 @@
     font-size: 0.95rem;
     line-height: 1.4;
     flex: 1;
-    display: flex;
-    align-items: center;
   }
 
   .card .btn-done {
@@ -129,7 +127,6 @@
   .card-empty .card-text {
     color: #9ca3af;
     font-style: italic;
-    justify-content: center;
     text-align: center;
   }
 
@@ -184,10 +181,10 @@ function renderGrid() {
     card.className = 'card fade-in';
     if (text === null) {
       card.classList.add('card-empty');
-      card.innerHTML = `<span class="card-text">No more cards!</span>`;
+      card.innerHTML = `<p class="card-text">No more cards!</p>`;
     } else {
       card.innerHTML = `
-        <span class="card-text">${sanitizeCardHtml(text)}</span>
+        <p class="card-text">${sanitizeCardHtml(text)}</p>
         <button class="btn-done" data-index="${i}">Done ✓</button>`;
     }
     grid.appendChild(card);
@@ -208,10 +205,10 @@ function replaceCard(index) {
     newCard.className = 'card fade-in';
     if (hand[index] === null) {
       newCard.classList.add('card-empty');
-      newCard.innerHTML = `<span class="card-text">No more cards!</span>`;
+      newCard.innerHTML = `<p class="card-text">No more cards!</p>`;
     } else {
       newCard.innerHTML = `
-        <span class="card-text">${sanitizeCardHtml(hand[index])}</span>
+        <p class="card-text">${sanitizeCardHtml(hand[index])}</p>
         <button class="btn-done" data-index="${index}">Done ✓</button>`;
     }
     grid.replaceChild(newCard, cardEl);
